@@ -39,8 +39,11 @@
                 <li><a href="#">SensorLuz</a></li>
                 <li><a href="#">SensorMov.</a></li>
                 <li><a href="config.html">Config</a></li>
-                <li><aside><a href="#">INFO</a></aside></li>
+                <li><a href="minombre.html">Cambio de nombre</a></li>
+                <li><aside id="bienvenida"></aside></li>
             </ul>
+            <script>bienvenida.textContent = `Hola ${localStorage.getItem("fname")}: Bienvenido a Smart Room`;</script>
+          
         </nav>
         <div class="contenido">
         <section>

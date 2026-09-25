@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Local storage Nombre</title>
+</head>
+<body>
+    <form onsubmit="guardarNombre()">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre">
+        <input type="submit" value="Guardar">
+    </form>
+    <script>
+        function guardarNombre() {
+            let fname = document.getElementById("nombre").value;
+            localStorage.setItem("fname", fname);
+        }
+    </script>
+    <div><a href="index.html">Pagina Principal</a></div>
+</body>
+</html>
