@@ -2,18 +2,86 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Config Page</title>
+    <title>Smart Room</title>
+
+    <style>
+        header, footer {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            gap: 20px;
+        }
+        section {
+            width: 50%;
+            padding: 10px;
+        }        .campo {
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
+
 <body>
     <main>
-        <header style="text-align: center; color: blue;">
-            <h1>Configuración</h1>
+        <header>
+            <h1>Configuración de la habitación</h1>
         </header>
-        <form id="miFormulario">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre">
-            <button type="submit">Enviar</button>
+
+        <form>
+            <section>
+                <h2>Datos de la habitación</h2>
+                <div class="campo">
+                    <label>País:</label>
+                    <input list="text">
+                    <datalist id="text">
+                        <option value="España"></option>
+                        <option value="Portugal"></option>
+                        <option value="Reino Unido"></option>
+                        <option value="Alemania"></option>
+                        <option value="Francia"></option>
+                        <option value="Italia"></option>
+                    </datalist>
+                </div>
+                <div class="campo">
+                    <label>Ciudad:</label>
+                    <input type="text">
+                </div>
+                <div class="campo">
+                    <label>Coordenadas GPS:</label>
+                    <input type="text">
+                </div>
+                <div class="campo">
+                    <label>Mapa URL:</label>
+                    <input type="url">
+                </div>
+                <div class="campo">
+                    <label>Foto:</label>
+                    <input type="file">
+                </div>
+                <div class="campo">
+                    <label>Password:</label>
+                    <input type="password">
+                </div>
+            </section>
+
+            <section>
+                <h2>Seleccione los sensores</h2>
+                <div><input type="checkbox"> Temperatura</div>
+                <div><input type="checkbox"> Humedad</div>
+                <div><input type="checkbox"> Nivel de sonido</div>
+                <div><input type="checkbox"> Nivel de luz</div>
+                <div><input type="checkbox"> Movimiento</div>
+            </section>
         </form>
+
+        <nav>
+            <ul>
+                <li><a href="index.html">Pagina Principal</a></li>
+            </ul>
+        </nav>
+        <footer>
+            Universidad de Alcalá
+        </footer>
     </main>
 </body>
 </html>
