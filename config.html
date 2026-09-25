@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Smart Room</title>
+    <title>Configuración</title>
 
     <style>
         header, footer {
@@ -26,8 +26,7 @@
         <header>
             <h1>Configuración de la habitación</h1>
         </header>
-
-        <form>
+        <form oninput="calcularDiferencia()">
             <section>
                 <h2>Datos de la habitación</h2>
                 <div class="campo">
@@ -62,6 +61,8 @@
                     <label>Password:</label>
                     <input type="password">
                 </div>
+                <button id="submit">enviar</button>
+                <script src="script.js"></script>
             </section>
 
             <section>
@@ -71,6 +72,20 @@
                 <div><input type="checkbox"> Nivel de sonido</div>
                 <div><input type="checkbox"> Nivel de luz</div>
                 <div><input type="checkbox"> Movimiento</div>
+
+                <h2>Configure alertas</h2>
+                <div class="campo">
+                    <label for="maxima">Temperatura máxima:</label>
+                    <input type="number" id="maxima" min="-20" max="45" step="0.1" required>
+                </div>
+                <div class="campo">
+                    <label for="minima">Temperatura mínima:</label>
+                    <input type="number" id="minima" min="-20" max="45" step="0.1" required>
+                </div>
+                <div class="campo">
+                    <label>Diferencia:</label>
+                    <output id="diferencia"></output>
+                </div>
             </section>
         </form>
 
@@ -83,5 +98,28 @@
             Universidad de Alcalá
         </footer>
     </main>
+
+<script>
+    function calcularDiferencia() {
+        let maxima = document.getElementById("maxima");
+        let minima = document.getElementById("minima");
+        let diferencia = document.getElementById("diferencia");
+        if (maxima.value === "" || minima.value === "") {
+            diferencia.value = "";
+            return;
+        }
+        if (!maxima.checkValidity() || !minima.checkValidity()) {
+            diferencia.value = "Introduce valores válidos entre -20 °C y 45 °C";
+            return;
+        }
+        let max = Number(maxima.value);
+        let min = Number(minima.value);
+        if (max < min) {
+            diferencia.value ="La temperatura máxima no puede ser menor que la mínima";
+            return;
+        }
+        diferencia.value = (max - min).toFixed(1) + " °C";
+    }
+</script>
 </body>
 </html>
