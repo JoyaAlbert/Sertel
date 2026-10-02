@@ -1,0 +1,77 @@
+/* Color y letra de la pagina */
+body {
+    background-color: #f2f6fa;
+    font-family: Arial, sans-serif;
+}
+
+/* Color de los titulos */
+h1,
+h2 {
+    color: #24527a;
+}
+
+/* Color de los enlaces */
+a {
+    color: #2874a6;
+}
+
+/* Fondo y borde de las secciones */
+section {
+    background-color: white;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+}
+
+/* Aspecto de los botones */
+button,
+input[type="submit"] {
+    background-color: #2874a6;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+}
+
+/* Centra el titulo y el pie */
+.pagina-principal header,
+.pagina-principal footer,
+.pagina-config header,
+.pagina-config footer {
+    text-align: center;
+}
+
+/* Pone el menu en una fila */
+.pagina-principal nav ul {
+    justify-content: center;
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+/* Pone el contenido en una fila */
+.pagina-principal .contenido {
+    display: flex;
+    gap: 20px;
+}
+
+/* Divide el espacio por la mitad */
+.pagina-principal .contenido section {
+    width: 50%;
+}
+
+/* Pone el formulario en una fila */
+.pagina-config form {
+    display: flex;
+    gap: 20px;
+}
+
+/* Da tamaño y espacio a las partes */
+.pagina-config section {
+    width: 50%;
+    padding: 10px;
+}
+
+/* Separa los campos */
+.pagina-config .campo {
+    margin-bottom: 8px;
+}
