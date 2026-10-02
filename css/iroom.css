@@ -22,6 +22,11 @@ section {
     border-radius: 6px;
 }
 
+/* Sombra al pasar el raton */
+section:hover {
+    box-shadow: 0 2px 8px #aaaaaa;
+}
+
 /* Aspecto de los botones */
 button,
 input[type="submit"] {
