@@ -27,3 +27,25 @@ La terminal debe permanecer abierta mientras se utiliza la página. Después se 
 ```text
 http://localhost:8080
 ```
+ 
+## Hardening aplicado
+
+Se aplicaron estas medidas de seguridad al servidor:
+
+### 1. Se endureció el acceso SSH
+
+Se desactivó el acceso directo como `root` y se dejó el acceso solo con claves SSH.
+
+Se realizó editando el archivo `/etc/ssh/sshd_config` y reiniciando el servicio SSH después.
+
+### 2. Se configuró el cortafuegos
+
+Se habilitó `ufw` y se dejaron permitidos únicamente los puertos necesarios para el servicio.
+
+En este caso se permitió SSH en el puerto `2222` y el acceso web para Apache.
+
+### 3. Se activaron las actualizaciones automáticas de seguridad
+
+Se instaló y configuró `unattended-upgrades` para que se aplicaran automáticamente los parches de seguridad.
+
+Así se mantuvo el sistema actualizado sin depender de hacerlo manualmente cada vez.
