@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="./css/iroom.css">
 </head>
 <body>
+    <button id="botonTema" class="boton-tema" type="button">Modo oscuro</button>
     <main>
         <header>
             <h1>Calculadora de temperaturas</h1>
@@ -44,6 +45,10 @@
             </select>
 
             <button type="button" onclick="convertir()">Convertir</button>
+
+            <h2>Historial</h2>
+            <ul id="historial"></ul>
+            <button type="button" onclick="borrarHistorial()">Borrar historial</button>
         </section>
 
         <nav>
@@ -78,6 +83,7 @@
             unidadResultado = document.getElementById("unidad").value;
 
             actualizarResultado();
+            guardarEnHistorial(numero1, numero2, operacion, valorResultado);
         }
 
         function convertir() {
@@ -122,6 +128,24 @@
             }
             return "°F";
         }
+
+        function guardarEnHistorial(numero1, numero2, operacion, resultado) {
+            const nombres = {
+                sumar: "+",
+                restar: "-",
+                multiplicar: "×",
+                dividir: "÷"
+            };
+
+            const linea = document.createElement("li");
+            linea.textContent = numero1 + " " + nombres[operacion] + " " + numero2 + " = " + resultado.toFixed(2);
+            document.getElementById("historial").appendChild(linea);
+        }
+
+        function borrarHistorial() {
+            document.getElementById("historial").innerHTML = "";
+        }
     </script>
+    <script src="tema.js?v=2"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="./css/iroom.css">
 </head>
 <body>
+    <button id="botonTema" class="boton-tema" type="button">Modo oscuro</button>
     <form onsubmit="guardarNombre()">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre">
@@ -23,8 +24,11 @@
             let fname = document.getElementById("nombre").value;
             localStorage.setItem("fname", fname);
         }
+
+        document.getElementById("nombre").value = localStorage.getItem("fname") || "";
     </script>
     <script src="datos.js"></script>
+    <script src="tema.js?v=2"></script>
     <div><a href="index.html">Pagina Principal</a></div>
 </body>
 </html>

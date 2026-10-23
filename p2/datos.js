@@ -40,10 +40,17 @@ function validarFormulario() {
         return false;
     }
 
+    if (temperature < -273.15) {
+        showModal("La temperatura no puede ser menor que -273,15 °C.");
+        return false;
+    }
+
     if (document.getElementById("password").value.length < 9) {
         showModal("La contraseña debe tener al menos 9 caracteres.");
         return false;
     }
+
+    guardarConfiguracion();
 
     if (temperature < 22 || temperature > 26) {
         showModal("Aviso: la temperatura está fuera del intervalo recomendado de 22 a 26 °C.");
@@ -53,6 +60,38 @@ function validarFormulario() {
 
     return false;
 }
+
+function guardarConfiguracion() {
+    const configuracion = {
+        pais: document.getElementById("countryInput").value,
+        ciudad: document.getElementById("city").value,
+        gps: document.getElementById("gps").value,
+        mapa: document.getElementById("mapUrl").value,
+        temperatura: document.getElementById("currentTemperature").value,
+        maxima: document.getElementById("maxima").value,
+        minima: document.getElementById("minima").value
+    };
+
+    localStorage.setItem("configuracion", JSON.stringify(configuracion));
+}
+
+function cargarConfiguracion() {
+    const guardada = localStorage.getItem("configuracion");
+    if (!guardada || !document.getElementById("countryInput")) {
+        return;
+    }
+
+    const configuracion = JSON.parse(guardada);
+    document.getElementById("countryInput").value = configuracion.pais || "";
+    document.getElementById("city").value = configuracion.ciudad || "";
+    document.getElementById("gps").value = configuracion.gps || "";
+    document.getElementById("mapUrl").value = configuracion.mapa || "";
+    document.getElementById("currentTemperature").value = configuracion.temperatura || "";
+    document.getElementById("maxima").value = configuracion.maxima || "";
+    document.getElementById("minima").value = configuracion.minima || "";
+}
+
+document.addEventListener("DOMContentLoaded", cargarConfiguracion);
 
 function showModal(message) {
     document.getElementById("modalMessage").textContent = message;
@@ -79,31 +118,59 @@ function crearEnlaceMapa() {
 }
 
 function convertirCoordenadas(texto) {
-    let partes = texto.split(",");
+    const partes = texto.split(",");
 
     // Formato decimal: 40.513, -3.3486
-    if (partes.length === 2 && !isNaN(Number(partes[0])) && !isNaN(Number(partes[1]))) {
-        return {
-            latitud: Number(partes[0]),
-            longitud: Number(partes[1])
-        };
+    if (partes.length === 2) {
+        const latitud = Number(partes[0]);
+        const longitud = Number(partes[1]);
+
+        if (Number.isFinite(latitud) && Number.isFinite(longitud) &&
+            latitud >= -90 && latitud <= 90 &&
+            longitud >= -180 && longitud <= 180) {
+            return { latitud, longitud };
+        }
     }
 
     // Formato DMS: N 40º 30' 45", O 3º 20' 54"
-    const patron = /([NS])\s*(\d+(?:\.\d+)?)\s*[º°]\s*(\d+(?:\.\d+)?)\s*['’]\s*(\d+(?:\.\d+)?)\s*["”]\s*,?\s*([EOW])\s*(\d+(?:\.\d+)?)\s*[º°]\s*(\d+(?:\.\d+)?)\s*['’]\s*(\d+(?:\.\d+)?)\s*["”]/i;
-    const datos = texto.match(patron);
+    const patron = /([NSEOW])\s*(\d+(?:\.\d+)?)\s*[º°]\s*(\d+(?:\.\d+)?)\s*['’]\s*(\d+(?:\.\d+)?)\s*["”]/gi;
+    const datos = [...texto.matchAll(patron)];
 
-    if (datos === null) {
+    if (datos.length !== 2) {
         return null;
     }
 
-    let latitud = Number(datos[2]) + Number(datos[3]) / 60 + Number(datos[4]) / 3600;
-    let longitud = Number(datos[6]) + Number(datos[7]) / 60 + Number(datos[8]) / 3600;
+    let latitud = null;
+    let longitud = null;
 
-    if (datos[1].toUpperCase() === "S") latitud = -latitud;
-    if (datos[5].toUpperCase() === "O" || datos[5].toUpperCase() === "W") longitud = -longitud;
+    for (const dato of datos) {
+        const direccion = dato[1].toUpperCase();
+        const grados = Number(dato[2]);
+        const minutos = Number(dato[3]);
+        const segundos = Number(dato[4]);
 
-    return { latitud: latitud, longitud: longitud };
+        if (minutos >= 60 || segundos >= 60) {
+            return null;
+        }
+
+        let valor = grados + minutos / 60 + segundos / 3600;
+
+        if (direccion === "N" || direccion === "S") {
+            if (latitud !== null || grados > 90) return null;
+            if (direccion === "S") valor = -valor;
+            latitud = valor;
+        } else {
+            if (longitud !== null || grados > 180) return null;
+            if (direccion === "O" || direccion === "W") valor = -valor;
+            longitud = valor;
+        }
+    }
+
+    if (latitud === null || longitud === null) {
+        return null;
+    }
+
+    return { latitud, longitud };
 }
 
 // Apartado 3: comprobación sencilla sin expresiones regulares.
