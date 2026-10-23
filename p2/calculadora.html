@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de temperaturas</title>
+    <link rel="stylesheet" href="./css/iroom.css">
+</head>
+<body>
+    <main>
+        <header>
+            <h1>Calculadora de temperaturas</h1>
+        </header>
+
+        <section>
+            <h2>Introduce los datos</h2>
+
+            <label for="numero1">Primer número:</label>
+            <input type="number" id="numero1">
+
+            <label for="numero2">Segundo número:</label>
+            <input type="number" id="numero2">
+
+            <label for="unidad">Unidad:</label>
+            <select id="unidad">
+                <option value="C">Celsius (°C)</option>
+                <option value="K">Kelvin (K)</option>
+                <option value="F">Fahrenheit (°F)</option>
+            </select>
+
+            <button type="button" onclick="calcular('sumar')">Sumar</button>
+            <button type="button" onclick="calcular('restar')">Restar</button>
+            <button type="button" onclick="calcular('multiplicar')">Multiplicar</button>
+            <button type="button" onclick="calcular('dividir')">Dividir</button>
+
+            <p>Resultado: <output id="resultado"></output> <span id="unidadResultado"></span></p>
+
+            <h2>Conversión</h2>
+
+            <label for="unidadDestino">Convertir resultado a:</label>
+            <select id="unidadDestino">
+                <option value="C">Celsius (°C)</option>
+                <option value="K">Kelvin (K)</option>
+                <option value="F">Fahrenheit (°F)</option>
+            </select>
+
+            <button type="button" onclick="convertir()">Convertir</button>
+        </section>
+
+        <nav>
+            <a href="index.html">Página principal</a>
+        </nav>
+    </main>
+
+    <script>
+        let valorResultado;
+        let unidadResultado;
+
+        function calcular(operacion) {
+            const numero1 = Number(document.getElementById("numero1").value);
+            const numero2 = Number(document.getElementById("numero2").value);
+
+            if (operacion === "sumar") {
+                valorResultado = numero1 + numero2;
+            } else if (operacion === "restar") {
+                valorResultado = numero1 - numero2;
+            } else if (operacion === "multiplicar") {
+                valorResultado = numero1 * numero2;
+            } else {
+                if (numero2 === 0) {
+                    document.getElementById("resultado").value = "No se puede dividir entre 0";
+                    document.getElementById("unidadResultado").textContent = "";
+                    valorResultado = undefined;
+                    return;
+                }
+                valorResultado = numero1 / numero2;
+            }
+
+            unidadResultado = document.getElementById("unidad").value;
+
+            actualizarResultado();
+        }
+
+        function convertir() {
+            if (valorResultado === undefined) {
+                return;
+            }
+
+            const nuevaUnidad = document.getElementById("unidadDestino").value;
+
+            let celsius;
+            if (unidadResultado === "C") {
+                celsius = valorResultado;
+            } else if (unidadResultado === "K") {
+                celsius = valorResultado - 273.15;
+            } else {
+                celsius = (valorResultado - 32) * 5 / 9;
+            }
+
+            if (nuevaUnidad === "C") {
+                valorResultado = celsius;
+            } else if (nuevaUnidad === "K") {
+                valorResultado = celsius + 273.15;
+            } else {
+                valorResultado = celsius * 9 / 5 + 32;
+            }
+
+            unidadResultado = nuevaUnidad;
+            actualizarResultado();
+        }
+
+        function actualizarResultado() {
+            document.getElementById("resultado").value = valorResultado.toFixed(2);
+            document.getElementById("unidadResultado").textContent = obtenerSimbolo(unidadResultado);
+        }
+
+        function obtenerSimbolo(unidad) {
+            if (unidad === "C") {
+                return "°C";
+            }
+            if (unidad === "K") {
+                return "K";
+            }
+            return "°F";
+        }
+    </script>
+</body>
+</html>

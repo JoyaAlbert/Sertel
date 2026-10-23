@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Room</title>
+
+    <link rel="stylesheet" href="./css/iroom.css">
+</head>
+<body class="pagina-principal">
+
+    <main>
+
+        <header>
+            <h1>Smart Room Project</h1>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#">SensorTemp.</a></li>
+                <li><a href="#">SensorHum.</a></li>
+                <li><a href="#">SensorSonido</a></li>
+                <li><a href="#">SensorLuz</a></li>
+                <li><a href="#">SensorMov.</a></li>
+                <li><a href="config.html">Config</a></li>
+                <li><a href="minombre.html">Cambio de nombre</a></li>
+                <li><a href="calculadora.html">Calculadora</a></li>
+                <li><aside id="bienvenida"></aside></li>
+            </ul>
+            <script>bienvenida.textContent = `Hola ${localStorage.getItem("fname")}: Bienvenido a Smart Room`;</script>
+          
+        </nav>
+        <div class="contenido">
+        <section>
+        <h2>Datos de la habitación</h2>
+
+        <ul>
+            <li>Nombre: Smart Room</li>
+            <li>Pais: España</li>
+            <li>Ciudad: Alcalá de Henares</li>
+            <li>Hall principal EPS UAH</li>
+            <li>Zona este (edificio verde)</li>
+        </ul>
+
+        <a href="https://maps.app.goo.gl/pbD251aupna75cJh9" target="_blank">
+            Ver ubicación en Google Maps
+        </a>
+
+        <br><br>
+        <div style="text-align: center;">
+            <img src="images/HallEps.jpg" alt="Hall Principal de la EPS, ubicacion de los sensores" width="600">
+        </div>
+        </section>
+
+
+        <section>
+             <h2>Datos sensores</h2>
+
+        <ul>
+            <li>Sensor de Temperatura: 25º</li>
+            <li>Sensor de Humedad: 30%</li>
+            <li>Sensor de sonido: 60dB</li>
+            <li>Sensor de luz: luz baja</li>
+            <li>Sensor de sonido: Sin movimiento</li>
+        </ul>
+
+        <details>
+            <summary>Información de los sensores</summary>
+            <p>Los sensores miden las condiciones de la habitación. Todos activos</p>
+        </details>
+        </section>
+
+        </div>
+
+        <footer>
+            Universidad de Alcalá
+        </footer>
+
+    </main>
+
+</body>
+</html>
