@@ -1,3 +1,5 @@
+
+codex resume 01a1891f-530e-7942-9745-12b01b9f09af
 # Laboratorio de Sertel
 
 ## Día 1

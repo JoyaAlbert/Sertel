@@ -102,7 +102,6 @@ function closeModal() {
     document.getElementById("modal").hidden = true;
 }
 
-// Apartado 2: crea un enlace usando coordenadas decimales o DMS.
 function crearEnlaceMapa() {
     const texto = document.getElementById("gps").value.trim();
     const resultado = convertirCoordenadas(texto);
@@ -173,7 +172,6 @@ function convertirCoordenadas(texto) {
     return { latitud, longitud };
 }
 
-// Apartado 3: comprobación sencilla sin expresiones regulares.
 function validarCorreoSinRegex() {
     const correo = document.getElementById("email").value.trim();
     const partes = correo.split("@");
@@ -189,7 +187,6 @@ function validarCorreoSinRegex() {
     mostrarResultadoCorreo(valido);
 }
 
-// Apartado 3: la misma comprobación usando una expresión regular.
 function validarCorreoConRegex() {
     const correo = document.getElementById("email").value.trim();
     const valido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
