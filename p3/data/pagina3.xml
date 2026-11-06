@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<estaciones>
+  <estacion>
+    <ciudad>Bilbao</ciudad>
+    <temperatura>20</temperatura>
+    <humedad>75</humedad>
+    <ruido>130</ruido>
+    <luz>100</luz>
+    <color>FFFF00</color>
+  </estacion>
+  <estacion>
+    <ciudad>Salamanca</ciudad>
+    <temperatura>22</temperatura>
+    <humedad>45</humedad>
+    <ruido>60</ruido>
+    <luz>170</luz>
+    <color>FF0000</color>
+  </estacion>
+  <estacion>
+    <ciudad>Granada</ciudad>
+    <temperatura>29</temperatura>
+    <humedad>32</humedad>
+    <ruido>80</ruido>
+    <luz>220</luz>
+    <color>00FF00</color>
+  </estacion>
+  <estacion>
+    <ciudad>Málaga</ciudad>
+    <temperatura>28</temperatura>
+    <humedad>55</humedad>
+    <ruido>100</ruido>
+    <luz>230</luz>
+    <color>0000FF</color>
+  </estacion>
+  <estacion>
+    <ciudad>Murcia</ciudad>
+    <temperatura>32</temperatura>
+    <humedad>40</humedad>
+    <ruido>70</ruido>
+    <luz>240</luz>
+    <color>FFFFFF</color>
+  </estacion>
+</estaciones>

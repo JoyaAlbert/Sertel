@@ -1,0 +1,5 @@
+[
+    { "Pais": "españa", "Opcion1": "madrid", "Opcion2": "barcelona", "Opcion3": "guadlajara"},
+    { "Pais": "francia", "Opcion1": "paris", "Opcion2": "lile", "Opcion3": "lyon"},
+    { "Pais": "alemania", "Opcion1": "berlin", "Opcion2": "frankfurt", "Opcion3": "munich"},
+]

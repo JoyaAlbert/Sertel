@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tablas</title>
+
+    <link rel="stylesheet" href="./css/iroom.css?v=3">
+</head>
+
+<body>
+    <button id="botonTema" class="boton-tema" type="button">Modo oscuro</button>
+    <main>
+    <table id="miTabla">
+        <thead>
+            <tr>
+                <th>Ciudad</th>
+                <th><label>Temperatura (°C) <input type="checkbox" class="dato-histograma" value="1"></label></th>
+                <th><label>Humedad (%) <input type="checkbox" class="dato-histograma" value="2"></label></th>
+                <th><label>Ruido <input type="checkbox" class="dato-histograma" value="3"></label></th>
+                <th><label>Nivel de luz <input type="checkbox" class="dato-histograma" value="4"></label></th>
+                <th>Color de iluminación</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Alcalá de Henares</td><td>25</td><td>48</td><td>150</td><td>120</td><td>000000</td></tr>
+            <tr><td>Alicante</td><td>30</td><td>69</td><td>180</td><td>211</td><td>FF0000</td></tr>
+            <tr><td>Badajoz</td><td>35</td><td>30</td><td>50</td><td>150</td><td>00FF00</td></tr>
+            <tr><td>Burgos</td><td>18</td><td>42</td><td>211</td><td>180</td><td>0000FF</td></tr>
+            <tr><td>Córdoba</td><td>35</td><td>41</td><td>150</td><td>50</td><td>FFFFFF</td></tr>
+            <tr><td>Madrid</td><td>26</td><td>40</td><td>120</td><td>200</td><td>FFFF00</td></tr>
+            <tr><td>Barcelona</td><td>24</td><td>65</td><td>140</td><td>180</td><td>FF0000</td></tr>
+            <tr><td>Valencia</td><td>28</td><td>60</td><td>100</td><td>210</td><td>00FF00</td></tr>
+            <tr><td>Sevilla</td><td>34</td><td>35</td><td>90</td><td>240</td><td>0000FF</td></tr>
+            <tr><td>Zaragoza</td><td>27</td><td>38</td><td>110</td><td>190</td><td>FFFFFF</td></tr>
+        </tbody>
+    </table>
+
+    <div id="paginacion" class="paginacion-container"></div>
+    <p id="mensaje-tabla"></p>
+
+    <div id="histograma" style="display: none;">
+        <h2 id="titulo-histograma"></h2>
+        <div id="barras-histograma"></div>
+    </div>
+
+        <nav>
+            <a href="index.html">Página principal</a>
+        </nav>
+    </main>
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+     $(document).ready(function() {
+        const filasPorPagina = 5;
+        const $tabla = $('#miTabla tbody');
+        const $filas = $tabla.find('tr');
+        const totalPaginas = 4;
+        let paginaActual = 1;
+        const $paginacionContainer = $('#paginacion');
+
+        function mostrarHistograma() {
+            const seleccionado = $('.dato-histograma:checked');
+            $('#barras-histograma').empty();
+            if (seleccionado.length === 0 || $tabla.find('tr').length === 0) {
+                $('#histograma').hide();
+                return;
+            }
+
+            const columna = Number(seleccionado.val());
+            const filas = $tabla.find('tr:visible');
+            let maximo = 1;
+            filas.each(function() {
+                maximo = Math.max(maximo, Number($(this).find('td').eq(columna).text()));
+            });
+
+            $('#titulo-histograma').text(seleccionado.parent().text().trim());
+            filas.each(function() {
+                const celdas = $(this).find('td');
+                const valor = Number(celdas.eq(columna).text());
+                const fila = $('<div class="fila-histograma">');
+                fila.append($('<span class="ciudad-histograma">').text(celdas.eq(0).text()));
+                const fondo = $('<div class="fondo-histograma">');
+                fondo.append($('<div class="barra-histograma">').css('width', (valor / maximo * 100) + '%'));
+                fila.append(fondo);
+                fila.append($('<span>').text(valor));
+                $('#barras-histograma').append(fila);
+            });
+            $('#histograma').show();
+        }
+
+        $('.dato-histograma').on('change', function() {
+            $('.dato-histograma').not(this).prop('checked', false);
+            mostrarHistograma();
+        });
+
+      
+        function darFormato() {
+            $('#miTabla').css('border-collapse', 'collapse');
+            $('#miTabla th').css({'background-color': '#24527a', 'color': 'white', 'padding': '8px'});
+            $tabla.find('td').css({'border': '1px solid #cccccc', 'padding': '8px'});
+            mostrarHistograma();
+        }
+
+        function mostrarPagina(pagina) {
+            paginaActual = pagina;
+            $tabla.empty();
+            $('#mensaje-tabla').text('');
+            $('.paginacion-btn').removeClass('active');
+            $(`.paginacion-btn[data-pagina="${pagina}"]`).addClass('active');
+            darFormato();
+
+            if (pagina <= 2) {
+                const inicio = (pagina - 1) * filasPorPagina;
+                $tabla.append($filas.slice(inicio, inicio + filasPorPagina).clone());
+                darFormato();
+            } else if (pagina === 3) {
+                document.getElementById('mensaje-tabla').textContent = 'Cargando...';
+                const peticion = new XMLHttpRequest();
+                peticion.open('GET', 'data/pagina3.xml');
+                peticion.onload = function() {
+                    if (paginaActual !== 3) return;
+                    if (peticion.status !== 200 || !peticion.responseXML) {
+                        document.getElementById('mensaje-tabla').textContent = 'No se pudo cargar la página XML';
+                        return;
+                    }
+                    const estaciones = peticion.responseXML.getElementsByTagName('estacion');
+                    const campos = ['ciudad', 'temperatura', 'humedad', 'ruido', 'luz', 'color'];
+                    const tabla = document.querySelector('#miTabla tbody');
+                    tabla.innerHTML = '';
+                    for (let i = 0; i < estaciones.length; i++) {
+                        const fila = tabla.insertRow();
+                        for (let j = 0; j < campos.length; j++) {
+                            fila.insertCell().textContent = estaciones[i].getElementsByTagName(campos[j])[0].textContent;
+                        }
+                    }
+                    document.getElementById('mensaje-tabla').textContent = '';
+                    darFormato();
+                };
+                peticion.onerror = function() {
+                    if (paginaActual === 3) document.getElementById('mensaje-tabla').textContent = 'No se pudo cargar la página XML';
+                };
+                peticion.send();
+            } else {
+                $('#mensaje-tabla').text('Cargando...');
+                $.ajax({
+                    url: 'data/pagina4.json',
+                    dataType: 'json',
+                    success: function(estaciones) {
+                        if (paginaActual !== 4) return;
+                        $tabla.empty();
+                        $.each(estaciones, function(i, estacion) {
+                            const fila = $('<tr>');
+                            $.each(['ciudad', 'temperatura', 'humedad', 'ruido', 'luz', 'color'], function(j, campo) {
+                                fila.append($('<td>').text(estacion[campo]));
+                            });
+                            $tabla.append(fila);
+                        });
+                        $('#mensaje-tabla').text('');
+                        darFormato();
+                    },
+                    error: function() {
+                        if (paginaActual === 4) $('#mensaje-tabla').text('No se pudo cargar la página JSON');
+                    }
+                });
+            }
+        }
+
+        for (let i = 1; i <= totalPaginas; i++) {
+            $paginacionContainer.append(`<button class="paginacion-btn" data-pagina="${i}">Página ${i}</button>`);
+        }
+
+        $('.paginacion-btn').on('click', function() {
+            const paginaSeleccionada = $(this).data('pagina');
+            mostrarPagina(paginaSeleccionada);
+        });
+
+        mostrarPagina(1);
+    });
+    </script>
+
+
+
+<script src="tema.js?v=2"></script>
+</body>
+

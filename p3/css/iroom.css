@@ -1,0 +1,194 @@
+/* Color y letra de la pagina */
+body {
+    background-color: #f2f6fa;
+    font-family: Arial, sans-serif;
+    color: #222222;
+}
+
+.boton-tema {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+}
+
+body.tema-oscuro {
+    background-color: #1e1e1e;
+    color: #eeeeee;
+}
+
+body.tema-oscuro section,
+body.tema-oscuro .modal-contenido {
+    background-color: #2d2d2d;
+    border-color: #555555;
+}
+
+body.tema-oscuro input,
+body.tema-oscuro select,
+body.tema-oscuro output {
+    background-color: #3a3a3a;
+    color: #ffffff;
+}
+
+/* Color de los titulos */
+h1,
+h2 {
+    color: #24527a;
+}
+
+/* Color de los enlaces */
+a {
+    color: #2874a6;
+}
+
+/* Fondo y borde de las secciones */
+section {
+    background-color: white;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+}
+
+/* Sombra al pasar el raton */
+section:hover {
+    box-shadow: 0 2px 8px #aaaaaa;
+}
+
+/* Aspecto de los botones */
+button,
+input[type="submit"] {
+    background-color: #2874a6;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+}
+
+/* Centra el titulo y el pie */
+.pagina-principal header,
+.pagina-principal footer,
+.pagina-config header,
+.pagina-config footer {
+    text-align: center;
+}
+
+/* Pone el menu en una fila */
+.pagina-principal nav ul {
+    justify-content: center;
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+/* Pone el contenido en una fila */
+.pagina-principal .contenido {
+    display: flex;
+    gap: 20px;
+}
+
+/* Divide el espacio por la mitad */
+.pagina-principal .contenido section {
+    width: 50%;
+}
+
+/* Pone el formulario en una fila */
+.pagina-config form {
+    display: flex;
+    gap: 20px;
+}
+
+/* Da tamaño y espacio a las partes */
+.pagina-config section {
+    width: 50%;
+    padding: 10px;
+}
+
+/* Separa los campos */
+.pagina-config .campo {
+    margin-bottom: 8px;
+}
+
+.pagina-config output {
+    display: block;
+    color: #555555;
+    margin-top: 4px;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: grid;
+    place-items: center;
+}
+
+.modal[hidden] {
+    display: none;
+}
+
+.modal-contenido {
+    background-color: white;
+    padding: 20px;
+    max-width: 400px;
+    border-radius: 6px;
+}
+
+.galeria-contenedor {
+  display: flex;
+  align-items: center;
+  max-width: 600px;
+  margin: 20px auto;
+  position: relative;
+}
+
+.galeria-track-wrapper {
+  width: 100%;
+  overflow: hidden; /* Oculta las imágenes que salen del marco */
+  border-radius: 8px;
+}
+
+.galeria-track {
+  display: flex;
+  transition: transform 0.4s ease-in-out; /* Suaviza el deslizamiento */
+}
+
+.galeria-track img {
+  width: 50%; /* Ajusta según cuántas imágenes quieras ver a la vez */
+  flex-shrink: 0;
+  object-fit: fill
+  ;
+}
+
+.btn-control {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+#histograma {
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+.fila-histograma {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.ciudad-histograma {
+    width: 150px;
+}
+
+.fondo-histograma {
+    flex: 1;
+    background-color: #dddddd;
+}
+
+.barra-histograma {
+    height: 20px;
+    background-color: #2874a6;
+}

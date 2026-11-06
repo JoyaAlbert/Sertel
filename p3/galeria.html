@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Galería</title>
+
+    <link rel="stylesheet" href="./css/iroom.css">
+</head>
+
+<body>
+    <button id="botonTema" class="boton-tema" type="button">Modo oscuro</button>
+    <main>
+        <header>
+            <h1>Galería de Imágenes</h1>
+        </header>
+        <div class="galeria-contenedor">
+            <div id="info-imagen" style="display: none; position: absolute; top: -30px; left: 50px; background: white; color: black; padding: 5px; z-index: 20;"></div>
+            <button id="btn-anterior" class="btn-control">◀</button>
+  
+                <div class="galeria-track-wrapper">
+                <div class="galeria-track">
+                <img src="images/sensor1.jpg" alt="Imagen 1">
+                <img src="images/sensor2.jpg" alt="Imagen 2">
+                <img src="images/sensor3.jpg" alt="Imagen 3">
+                <img src="images/sensor4.jpg" alt="Imagen 4">
+        </div>
+        </div>
+            <button id="btn-siguiente" class="btn-control">▶</button>
+        </div>
+        <nav>
+            <a href="index.html">Página principal</a>
+        </nav>
+    </main>
+    <!-- Importar jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+$(document).ready(function() {
+  let indice = 0;
+  const $track = $('.galeria-track');
+  const $imagenes = $('.galeria-track img');
+  const totalImágenes = $imagenes.length;
+
+  $imagenes.hover(function() {
+    $('#info-imagen').text($(this).attr('src').split('/').pop()).show();
+  }, function() {
+    $('#info-imagen').hide();
+  });
+
+  function actualizarSlider() {
+    const desplazamiento = -indice * 100; // Asumiendo que cada imagen ocupa el 100% del ancho
+    $track.css('transform', `translateX(${desplazamiento}%)`);
+  }
+
+  $('#btn-siguiente').click(function() {
+    if (indice < totalImágenes/2 - 1) {
+      indice++;
+    } else {
+      indice = 0; // Regresa al inicio (opcional)
+    }
+    actualizarSlider();
+  });
+
+  $('#btn-anterior').click(function() {
+    if (indice > 0) {
+      indice--;
+    } else {
+      indice = totalImágenes/2 - 1; // Va al final
+    }
+    actualizarSlider();
+  });
+});
+</script>
+
+
+
+<script src="tema.js?v=2"></script>
+</body>
+

@@ -1,0 +1,42 @@
+[
+    {
+        "ciudad": "Oviedo",
+        "temperatura": "19",
+        "humedad": "80",
+        "ruido": "60",
+        "luz": "90",
+        "color": "FFFF00"
+    },
+    {
+        "ciudad": "Santander",
+        "temperatura": "21",
+        "humedad": "78",
+        "ruido": "75",
+        "luz": "110",
+        "color": "FF0000"
+    },
+    {
+        "ciudad": "Valladolid",
+        "temperatura": "23",
+        "humedad": "44",
+        "ruido": "85",
+        "luz": "160",
+        "color": "00FF00"
+    },
+    {
+        "ciudad": "Toledo",
+        "temperatura": "30",
+        "humedad": "33",
+        "ruido": "65",
+        "luz": "200",
+        "color": "0000FF"
+    },
+    {
+        "ciudad": "León",
+        "temperatura": "18",
+        "humedad": "50",
+        "ruido": "55",
+        "luz": "140",
+        "color": "FFFFFF"
+    }
+]
