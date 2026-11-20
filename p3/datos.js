@@ -3,7 +3,8 @@ const paises = ["españa", "portugal", "alemania", "francia"];
 function cargarCiudades(ciudadGuardada = "") {
     const pais = $('#countryInput').val().trim().toLowerCase();
     const ciudad = $('#city');
-    ciudad.empty().append('<option value="">Introduce primero un país</option>').prop('disabled', true);
+    ciudad.html('<option value="">Introduce primero un país</option>');
+    ciudad.prop('disabled', true);
 
     if (!paises.includes(pais)) {
         return;
@@ -15,17 +16,27 @@ function cargarCiudades(ciudadGuardada = "") {
         dataType: 'text',
         success: function(datos) {
             // Ignorar la respuesta si el usuario ya ha cambiado de país
-            if ($('#countryInput').val().trim().toLowerCase() !== pais) return;
-            ciudad.empty().append('<option value="">Selecciona una ciudad</option>');
+            const paisActual = $('#countryInput').val().trim().toLowerCase();
+            if (paisActual !== pais) {
+                return;
+            }
+            ciudad.html('<option value="">Selecciona una ciudad</option>');
             const ciudades = datos.trim().split('\n');
             for (let i = 0; i < ciudades.length; i++) {
                 const nombre = ciudades[i].trim();
-                ciudad.append($('<option>').val(nombre).text(nombre));
+                const opcion = $('<option>');
+                opcion.val(nombre);
+                opcion.text(nombre);
+                ciudad.append(opcion);
             }
-            ciudad.prop('disabled', false).val(ciudadGuardada);
+            ciudad.prop('disabled', false);
+            ciudad.val(ciudadGuardada);
         },
         error: function() {
-            if ($('#countryInput').val().trim().toLowerCase() !== pais) return;
+            const paisActual = $('#countryInput').val().trim().toLowerCase();
+            if (paisActual !== pais) {
+                return;
+            }
             ciudad.html('<option value="">No se pudieron cargar las ciudades</option>');
         }
     });

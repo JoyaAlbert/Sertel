@@ -37,23 +37,27 @@
 <script>
 $(document).ready(function() {
   let indice = 0;
-  const $track = $('.galeria-track');
-  const $imagenes = $('.galeria-track img');
-  const totalImágenes = $imagenes.length;
+  const tira = $('.galeria-track');
+  const imagenes = $('.galeria-track img');
+  const totalPaginas = imagenes.length / 2; // Se ven dos imágenes por página
 
-  $imagenes.hover(function() {
-    $('#info-imagen').text($(this).attr('src').split('/').pop()).show();
+  imagenes.hover(function() {
+    const ruta = $(this).attr('src');
+    const partes = ruta.split('/');
+    const nombre = partes[partes.length - 1];
+    $('#info-imagen').text(nombre);
+    $('#info-imagen').show();
   }, function() {
     $('#info-imagen').hide();
   });
 
   function actualizarSlider() {
-    const desplazamiento = -indice * 100; // Asumiendo que cada imagen ocupa el 100% del ancho
-    $track.css('transform', `translateX(${desplazamiento}%)`);
+    const desplazamiento = -indice * 100; // Avanzar una página completa
+    tira.css('transform', 'translateX(' + desplazamiento + '%)');
   }
 
   $('#btn-siguiente').click(function() {
-    if (indice < totalImágenes/2 - 1) {
+    if (indice < totalPaginas - 1) {
       indice++;
     } else {
       indice = 0; // Regresa al inicio (opcional)
@@ -65,7 +69,7 @@ $(document).ready(function() {
     if (indice > 0) {
       indice--;
     } else {
-      indice = totalImágenes/2 - 1; // Va al final
+      indice = totalPaginas - 1; // Va al final
     }
     actualizarSlider();
   });

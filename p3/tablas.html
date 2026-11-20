@@ -56,132 +56,265 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script>
-     $(document).ready(function() {
-        const filasPorPagina = 5;
-        const $tabla = $('#miTabla tbody');
-        const $filas = $tabla.find('tr');
-        const totalPaginas = 4;
-        let paginaActual = 1;
-        const $paginacionContainer = $('#paginacion');
+     
+$(document).ready(function() {
 
-        function mostrarHistograma() {
-            const seleccionado = $('.dato-histograma:checked');
-            $('#barras-histograma').empty();
-            if (seleccionado.length === 0 || $tabla.find('tr').length === 0) {
-                $('#histograma').hide();
+    // CONFIGURACIÓN
+    const filasPorPagina = 5;
+    const totalPaginas = 4;
+    const campos = ['ciudad', 'temperatura', 'humedad', 'ruido', 'luz', 'color'];
+
+    const tabla = $('#miTabla tbody');
+    const filasOriginales = tabla.find('tr').clone();
+    const paginacion = $('#paginacion');
+
+    let paginaActual = 1;
+
+
+    // AÑADIR UNA FILA A LA TABLA
+    function añadirFila(datos) {
+        const fila = $('<tr>');
+
+        for (let i = 0; i < campos.length; i++) {
+            const celda = $('<td>');
+            celda.text(datos[campos[i]]);
+            fila.append(celda);
+        }
+
+        tabla.append(fila);
+    }
+
+
+    // DAR FORMATO A LA TABLA
+    function darFormato() {
+        $('#miTabla').css('border-collapse', 'collapse');
+
+        $('#miTabla th').css({
+            'background-color': '#24527a',
+            'color': 'white',
+            'padding': '8px'
+        });
+
+        tabla.find('td').css({
+            'border': '1px solid #cccccc',
+            'padding': '8px'
+        });
+    }
+
+
+    // CARGAR PÁGINAS 1 Y 2 (DATOS LOCALES)
+    function cargarPaginaLocal(pagina) {
+        const inicio = (pagina - 1) * filasPorPagina;
+        const fin = inicio + filasPorPagina;
+
+        tabla.append(filasOriginales.slice(inicio, fin).clone());
+
+        actualizarTabla();
+    }
+
+
+    // CARGAR PÁGINA 3 (XML CON JAVASCRIPT NATIVO)
+    function cargarXML() {
+        const peticion = new XMLHttpRequest();
+
+        peticion.open('GET', 'data/pagina3.xml');
+
+        peticion.onload = function() {
+            // No mostrar la respuesta si ya estamos en otra página
+            if (paginaActual !== 3) {
                 return;
             }
 
-            const columna = Number(seleccionado.val());
-            const filas = $tabla.find('tr:visible');
-            let maximo = 1;
-            filas.each(function() {
-                maximo = Math.max(maximo, Number($(this).find('td').eq(columna).text()));
-            });
+            if (peticion.status !== 200 || !peticion.responseXML) {
+                mostrarError('No se pudo cargar el XML');
+                return;
+            }
 
-            $('#titulo-histograma').text(seleccionado.parent().text().trim());
-            filas.each(function() {
-                const celdas = $(this).find('td');
-                const valor = Number(celdas.eq(columna).text());
-                const fila = $('<div class="fila-histograma">');
-                fila.append($('<span class="ciudad-histograma">').text(celdas.eq(0).text()));
-                const fondo = $('<div class="fondo-histograma">');
-                fondo.append($('<div class="barra-histograma">').css('width', (valor / maximo * 100) + '%'));
-                fila.append(fondo);
-                fila.append($('<span>').text(valor));
-                $('#barras-histograma').append(fila);
-            });
-            $('#histograma').show();
-        }
+            const estaciones = peticion.responseXML.getElementsByTagName('estacion');
 
-        $('.dato-histograma').on('change', function() {
-            $('.dato-histograma').not(this).prop('checked', false);
-            mostrarHistograma();
+            const cuerpoTabla = document.querySelector('#miTabla tbody');
+
+            for (let i = 0; i < estaciones.length; i++) {
+                const fila = cuerpoTabla.insertRow();
+
+                for (let j = 0; j < campos.length; j++) {
+                    const dato = estaciones[i].getElementsByTagName(campos[j])[0];
+                    const celda = fila.insertCell();
+                    celda.textContent = dato.textContent;
+                }
+            }
+
+            actualizarTabla();
+        };
+
+        peticion.onerror = function() {
+            if (paginaActual === 3) {
+                mostrarError('No se pudo cargar el XML');
+            }
+        };
+
+        peticion.send();
+    }
+
+
+    // CARGAR PÁGINA 4 (JSON CON JQUERY)
+    function cargarJSON() {
+        $.ajax({
+            url: 'data/pagina4.json',
+            dataType: 'json',
+            success: function(estaciones) {
+                if (paginaActual !== 4) {
+                    return;
+                }
+
+                for (let i = 0; i < estaciones.length; i++) {
+                    añadirFila(estaciones[i]);
+                }
+
+                actualizarTabla();
+            },
+            error: function() {
+                if (paginaActual === 4) {
+                    mostrarError('No se pudo cargar el JSON');
+                }
+            }
         });
+    }
 
-      
-        function darFormato() {
-            $('#miTabla').css('border-collapse', 'collapse');
-            $('#miTabla th').css({'background-color': '#24527a', 'color': 'white', 'padding': '8px'});
-            $tabla.find('td').css({'border': '1px solid #cccccc', 'padding': '8px'});
-            mostrarHistograma();
+
+    // ACTUALIZAR TABLA E HISTOGRAMA
+    function actualizarTabla() {
+        $('#mensaje-tabla').text('');
+        darFormato();
+        mostrarHistograma();
+    }
+
+
+    // MOSTRAR ERRORES
+    function mostrarError(mensaje) {
+        $('#mensaje-tabla').text(mensaje);
+        mostrarHistograma();
+    }
+
+
+    // CAMBIAR DE PÁGINA
+    function mostrarPagina(pagina) {
+        paginaActual = pagina;
+
+        tabla.empty();
+        $('#mensaje-tabla').text('');
+
+        $('.paginacion-btn').removeClass('active');
+        const boton = $('.paginacion-btn[data-pagina="' + pagina + '"]');
+        boton.addClass('active');
+
+        // Ocultar el histograma mientras se cargan los datos
+        $('#histograma').hide();
+
+        if (pagina <= 2) {
+            cargarPaginaLocal(pagina);
+
+        } else if (pagina === 3) {
+            $('#mensaje-tabla').text('Cargando...');
+            cargarXML();
+
+        } else if (pagina === 4) {
+            $('#mensaje-tabla').text('Cargando...');
+            cargarJSON();
+        }
+    }
+
+
+    // MOSTRAR HISTOGRAMA
+    function mostrarHistograma() {
+        const seleccionado = $('.dato-histograma:checked');
+        const barras = $('#barras-histograma');
+
+        barras.empty();
+
+        if (seleccionado.length === 0 || tabla.find('tr').length === 0) {
+            $('#histograma').hide();
+            return;
         }
 
-        function mostrarPagina(pagina) {
-            paginaActual = pagina;
-            $tabla.empty();
-            $('#mensaje-tabla').text('');
-            $('.paginacion-btn').removeClass('active');
-            $(`.paginacion-btn[data-pagina="${pagina}"]`).addClass('active');
-            darFormato();
+        const columna = Number(seleccionado.val());
+        const filas = tabla.find('tr');
+        let maximo = 1;
 
-            if (pagina <= 2) {
-                const inicio = (pagina - 1) * filasPorPagina;
-                $tabla.append($filas.slice(inicio, inicio + filasPorPagina).clone());
-                darFormato();
-            } else if (pagina === 3) {
-                document.getElementById('mensaje-tabla').textContent = 'Cargando...';
-                const peticion = new XMLHttpRequest();
-                peticion.open('GET', 'data/pagina3.xml');
-                peticion.onload = function() {
-                    if (paginaActual !== 3) return;
-                    if (peticion.status !== 200 || !peticion.responseXML) {
-                        document.getElementById('mensaje-tabla').textContent = 'No se pudo cargar la página XML';
-                        return;
-                    }
-                    const estaciones = peticion.responseXML.getElementsByTagName('estacion');
-                    const campos = ['ciudad', 'temperatura', 'humedad', 'ruido', 'luz', 'color'];
-                    const tabla = document.querySelector('#miTabla tbody');
-                    tabla.innerHTML = '';
-                    for (let i = 0; i < estaciones.length; i++) {
-                        const fila = tabla.insertRow();
-                        for (let j = 0; j < campos.length; j++) {
-                            fila.insertCell().textContent = estaciones[i].getElementsByTagName(campos[j])[0].textContent;
-                        }
-                    }
-                    document.getElementById('mensaje-tabla').textContent = '';
-                    darFormato();
-                };
-                peticion.onerror = function() {
-                    if (paginaActual === 3) document.getElementById('mensaje-tabla').textContent = 'No se pudo cargar la página XML';
-                };
-                peticion.send();
-            } else {
-                $('#mensaje-tabla').text('Cargando...');
-                $.ajax({
-                    url: 'data/pagina4.json',
-                    dataType: 'json',
-                    success: function(estaciones) {
-                        if (paginaActual !== 4) return;
-                        $tabla.empty();
-                        $.each(estaciones, function(i, estacion) {
-                            const fila = $('<tr>');
-                            $.each(['ciudad', 'temperatura', 'humedad', 'ruido', 'luz', 'color'], function(j, campo) {
-                                fila.append($('<td>').text(estacion[campo]));
-                            });
-                            $tabla.append(fila);
-                        });
-                        $('#mensaje-tabla').text('');
-                        darFormato();
-                    },
-                    error: function() {
-                        if (paginaActual === 4) $('#mensaje-tabla').text('No se pudo cargar la página JSON');
-                    }
-                });
+        // Buscar el valor máximo para escalar las barras
+        for (let i = 0; i < filas.length; i++) {
+            const celdas = filas.eq(i).find('td');
+            const valor = Number(celdas.eq(columna).text());
+            if (valor > maximo) {
+                maximo = valor;
             }
         }
 
-        for (let i = 1; i <= totalPaginas; i++) {
-            $paginacionContainer.append(`<button class="paginacion-btn" data-pagina="${i}">Página ${i}</button>`);
+        // Título del histograma
+        $('#titulo-histograma').text(
+            seleccionado.parent().text().trim()
+        );
+
+        // Crear una barra por cada ciudad
+        for (let i = 0; i < filas.length; i++) {
+            const celdas = filas.eq(i).find('td');
+
+            const ciudad = celdas.eq(0).text();
+            const valor = Number(celdas.eq(columna).text());
+            const porcentaje = (valor / maximo) * 100;
+
+            const fila = $('<div class="fila-histograma">');
+            const fondo = $('<div class="fondo-histograma">');
+            const barra = $('<div class="barra-histograma">');
+
+            barra.css('width', porcentaje + '%');
+            fondo.append(barra);
+
+            const nombreCiudad = $('<span class="ciudad-histograma">');
+            nombreCiudad.text(ciudad);
+            const numero = $('<span>');
+            numero.text(valor);
+
+            fila.append(nombreCiudad);
+            fila.append(fondo);
+            fila.append(numero);
+            barras.append(fila);
         }
 
-        $('.paginacion-btn').on('click', function() {
-            const paginaSeleccionada = $(this).data('pagina');
-            mostrarPagina(paginaSeleccionada);
-        });
+        $('#histograma').show();
+    }
 
-        mostrarPagina(1);
+
+    // CHECKBOXES DEL HISTOGRAMA
+    $('.dato-histograma').on('change', function() {
+        $('.dato-histograma').not(this).prop('checked', false);
+        mostrarHistograma();
     });
+
+
+    // CREAR BOTONES DE PAGINACIÓN
+    for (let i = 1; i <= totalPaginas; i++) {
+        const boton = $('<button>');
+        boton.addClass('paginacion-btn');
+        boton.attr('data-pagina', i);
+        boton.text('Página ' + i);
+
+        paginacion.append(boton);
+    }
+
+
+    // EVENTO DE LOS BOTONES
+    $('.paginacion-btn').on('click', function() {
+        const pagina = $(this).data('pagina');
+        mostrarPagina(pagina);
+    });
+
+
+    // MOSTRAR LA PRIMERA PÁGINA AL INICIAR
+    mostrarPagina(1);
+
+});
+
     </script>
 
 
